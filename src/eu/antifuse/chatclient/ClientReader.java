@@ -1,6 +1,4 @@
-package eu.antifuse.simplechats.client;
-
-import javafx.scene.control.TextArea;
+package eu.antifuse.chatclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +31,15 @@ public class ClientReader extends Thread {
             try {
                 String response = reader.readLine();
                 System.out.println(response);
-                this.gui.showMessage(response);
+                if (response.startsWith("+MSG")) {
+                    this.gui.showMessage(client.dEscape(response.substring(5)));
+                } else if (response.startsWith("-FAIL")) {
+                    this.gui.showError(response.substring(7));
+                }  else if (response.startsWith("+NICK")) {
+                    String nicks = response.substring(6);
+                    this.gui.showMessage(nicks.split(":").length + " Clients online:");
+                    for (String nick: nicks.split(":")) this.gui.showMessage(nick);
+                }
 
             } catch (IOException ex) {
                 System.out.println("Error reading from server: " + ex.getMessage());

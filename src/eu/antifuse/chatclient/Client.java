@@ -1,11 +1,7 @@
-package eu.antifuse.simplechats.client;
+package eu.antifuse.chatclient;
 
-import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -31,18 +27,19 @@ public class Client {
             this.reader.setGui(this.gui);
             this.reader.start();
             this.write = new PrintWriter(this.socket.getOutputStream(), true);
-            this.write.println("UN " + username);
-            System.out.println("UN " + username);
+            this.write.println("NAME:" + escape(username));
+            System.out.println("NAME:" + escape(username));
         } catch (IOException e) {
             e.printStackTrace();
+            this.gui.showError("Es kann keine Verbindung hergestellt werden.");
         }
     }
 
     public void disconnect() {
         if (!this.socket.isConnected()) return;
-        this.write.println("DC");
         try {
             this.write.close();
+            this.socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,13 +47,13 @@ public class Client {
 
     public void sendMessage(String content) {
         if (content == null || this.username == null) return;
-        if (content.split(" ")[0].equals("/list")) this.write.println("LS");
+        if (content.split(" ")[0].equals("/list")) this.write.println("NICK");
         else if (content.split(" ")[0].equals("/name")) {
             if (content.split(" ").length < 2) return;
-            this.write.println("UN " + content.split(" ")[1]);
+            this.write.println("NAME:" + escape(content.split(" ")[1]));
         } else {
-            System.out.println("SN " + content);
-            this.write.println("SN " + content);
+            System.out.println("ALL:" + escape(content));
+            this.write.println("ALL:" + escape(content));
         }
     }
 
@@ -66,5 +63,13 @@ public class Client {
 
     public void setGui(Controller gui) {
         this.gui = gui;
+    }
+
+    public String escape(String input) {
+        return input.replace("&","&a").replace(":","&c");
+    }
+
+    public String dEscape (String input) {
+        return input.replace("&c",":").replace("&a","&");
     }
 }

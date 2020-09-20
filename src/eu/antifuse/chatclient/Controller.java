@@ -1,12 +1,11 @@
-package eu.antifuse.simplechats.client;
+package eu.antifuse.chatclient;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -53,7 +52,7 @@ public class Controller extends Application {
             port = Integer.parseInt(addrStr.split(":")[1]);
         } else {
             ip = addrStr;
-            port = 2311;
+            port = 1000;
         }
         client.setUsername(name.getText());
         client.setGui(this);
@@ -74,7 +73,7 @@ public class Controller extends Application {
     public void start(Stage primaryStage) throws Exception {
         loader = new FXMLLoader(getClass().getResource("clientgui.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("SimpleChats Client");
+        primaryStage.setTitle("Chatclient");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -88,5 +87,14 @@ public class Controller extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void showError(String error) {
+        this.outArea.appendText("\n" + error);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fehler!");
+        alert.setHeaderText(null);
+        alert.setContentText(error);
+        alert.showAndWait();
     }
 }
