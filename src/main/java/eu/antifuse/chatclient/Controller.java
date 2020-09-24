@@ -79,14 +79,14 @@ public class Controller extends Application {
         primaryStage.show();
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void stop() throws Exception {
         if (this.client != null) this.client.disconnect();
         System.exit(0);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     public void showError(String error) {
